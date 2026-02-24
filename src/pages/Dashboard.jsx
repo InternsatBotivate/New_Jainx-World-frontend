@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const BASE_URL = import.meta.env.VITE_FRONTEND_API_KEY+ "/api/hp/programs";
+const BASE_URL = import.meta.env.VITE_FRONTEND_API_KEY + "/api/hp/programs";
 
 function Dashboard() {
   const [partnerId, setPartnerId] = useState("991002342603");
@@ -28,13 +28,13 @@ function Dashboard() {
 
   const intervalRef = useRef(null);
 
-const fetchSearchData = useCallback(async (params) => {
-  const response = await axios.get(BASE_URL, { params });
-  return response.data;
-}, []);
+  const fetchSearchData = useCallback(async (params) => {
+    const response = await axios.get(BASE_URL, { params });
+    return response.data;
+  }, []);
 
-const handleSearchClick = useCallback(async () => {
-    const params = { quarter, partnerid:partnerId, page, pageSize };
+  const handleSearchClick = useCallback(async () => {
+    const params = { quarter, partnerId, page, pageSize };
 
     try {
       setLoading(true);
@@ -57,12 +57,11 @@ const handleSearchClick = useCallback(async () => {
           console.error("Auto refresh failed", err);
         }
       }, 60000);
-
     } catch (err) {
       setError(
         err.response?.data?.message ||
-        err.message ||
-        "Something went wrong. Please try again."
+          err.message ||
+          "Something went wrong. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -87,15 +86,22 @@ const handleSearchClick = useCallback(async () => {
 
     const validData = actualData.data;
     const totalTarget = validData.reduce(
-      (acc, curr) => acc + (parseFloat(curr.targetUSD) || 0),
+      (acc, curr) =>
+        acc +
+        (parseFloat(curr.targetLC) || parseFloat(curr.targetUSD) * 83 || 0),
       0,
     );
     const totalAchievement = validData.reduce(
-      (acc, curr) => acc + (parseFloat(curr.actualsForAchievementUSD) || 0),
+      (acc, curr) =>
+        acc +
+        (parseFloat(curr.actualsForAchievementLC) ||
+          parseFloat(curr.actualsForAchievementUSD) * 83 ||
+          0),
       0,
     );
     const totalBonus = validData.reduce(
-      (acc, curr) => acc + (parseFloat(curr.bonusUSD) || 0),
+      (acc, curr) =>
+        acc + (parseFloat(curr.bonusLC) || parseFloat(curr.bonusUSD) * 83 || 0),
       0,
     );
 
@@ -111,18 +117,18 @@ const handleSearchClick = useCallback(async () => {
       totalRecords: actualData.data.length,
       currentPage: actualData.currentPage,
       totalPages: actualData.pageCount,
-      totalTarget: totalTarget.toLocaleString("en-US", {
+      totalTarget: totalTarget.toLocaleString("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }),
-      totalAchievement: totalAchievement.toLocaleString("en-US", {
+      totalAchievement: totalAchievement.toLocaleString("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }),
       achievementPct: achievementPct + "%",
-      totalBonus: totalBonus.toLocaleString("en-US", {
+      totalBonus: totalBonus.toLocaleString("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }),
     };
   }, [quarter, partnerId, actualData]);
@@ -204,35 +210,41 @@ const handleSearchClick = useCallback(async () => {
         </div>
       )}
 
-
       {!loading && error && (
-        <div style={{
-          border: "1px solid #ff4d4f",
-          backgroundColor: "#fff2f0",
-          padding: "20px",
-          borderRadius: "8px",
-          textAlign: "center",
-          color: "#cf1322",
-        }}>
+        <div
+          style={{
+            border: "1px solid #ff4d4f",
+            backgroundColor: "#fff2f0",
+            padding: "20px",
+            borderRadius: "8px",
+            textAlign: "center",
+            color: "#cf1322",
+          }}
+        >
           <h3>⚠ Error</h3>
           <p>{error}</p>
-          <button onClick={handleSearchClick} style={{
-            marginTop: "10px",
-            padding: "6px 12px",
-            border: "none",
-            backgroundColor: "#ff4d4f",
-            color: "#fff",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}>
+          <button
+            onClick={handleSearchClick}
+            style={{
+              marginTop: "10px",
+              padding: "6px 12px",
+              border: "none",
+              backgroundColor: "#ff4d4f",
+              color: "#fff",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
             Retry
           </button>
         </div>
       )}
 
-      {!error && (<div className="program-list">
-        <ProgramTable data={filteredData} onView={setSelectedItem} />
-      </div>)}
+      {!error && (
+        <div className="program-list">
+          <ProgramTable data={filteredData} onView={setSelectedItem} />
+        </div>
+      )}
 
       <ProgramDetailModal
         selectedItem={selectedItem}

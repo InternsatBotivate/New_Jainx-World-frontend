@@ -1,5 +1,23 @@
-function ProgramTable({ data, onView }) {
-  if (!data || data.length === 0) return null;
+import ClipLoader from "react-spinners/ClipLoader";
+
+function ProgramTable({ data, onView, loading }) {
+  if (loading) {
+    return (
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "50px 0" }}
+      >
+        <ClipLoader size={40} color="#007bff" />
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div style={{ textAlign: "center", padding: "20px", color: "#888" }}>
+        No programs found.
+      </div>
+    );
+  }
 
   return (
     <table className="program-table">

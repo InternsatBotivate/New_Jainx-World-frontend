@@ -191,25 +191,6 @@ function Dashboard() {
         setSearchQuery={setSearchQuery}
       />
 
-      {loading && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(255, 255, 255, 0.6)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
-          <ClipLoader size={60} />
-        </div>
-      )}
-
       {!loading && error && (
         <div
           style={{
@@ -242,7 +223,11 @@ function Dashboard() {
 
       {!error && (
         <div className="program-list">
-          <ProgramTable data={filteredData} onView={setSelectedItem} />
+          <ProgramTable
+            data={filteredData}
+            onView={setSelectedItem}
+            loading={loading}
+          />
         </div>
       )}
 

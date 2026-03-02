@@ -27,10 +27,12 @@ function ProgramTable({ data, onView, loading }) {
           <th>Scheme / Category</th>
           <th>BU / Sub-BU</th>
           <th>Type</th>
-          <th>Target (INR)</th>
-          <th>Achievement (INR)</th>
-          <th>% Achieved</th>
-          <th>Bonus (INR)</th>
+          <th>Target</th>
+          <th>Actuals for Achievement</th>
+          <th>Actuals for Rebate w/o Exclusion</th>
+          <th>Achievement %</th>
+          <th>Actuals for Rebate</th>
+          <th>Bonus</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -72,21 +74,24 @@ function ProgramTable({ data, onView, loading }) {
             <td data-label="Type">
               <div style={{ fontSize: "0.85rem" }}>{item.type}</div>
             </td>
-            <td data-label="Target (INR)">
+            <td data-label="Target">
               {(
                 parseFloat(item.targetLC) ||
                 parseFloat(item.targetUSD) * 83 ||
                 0
-              ).toLocaleString("en-IN", { style: "currency", currency: "INR" })}
+              ).toLocaleString("en-IN")}
             </td>
-            <td data-label="Achievement (INR)">
+            <td data-label="Achievement">
               {(
                 parseFloat(item.actualsForAchievementLC) ||
                 parseFloat(item.actualsForAchievementUSD) * 83 ||
                 0
-              ).toLocaleString("en-IN", { style: "currency", currency: "INR" })}
+              ).toLocaleString("en-IN")}
             </td>
-            <td data-label="% Achieved">
+            <td data-label="Actuals for Rebate w/o Exclusion">
+              {item.actualsForPayOnLC}
+            </td>
+            <td data-label="Achievement %">
               <span
                 className={
                   parseFloat(item.quarterlyAchievementPercentage) > 100
@@ -97,12 +102,16 @@ function ProgramTable({ data, onView, loading }) {
                 {item.quarterlyAchievementPercentage}%
               </span>
             </td>
-            <td data-label="Bonus (INR)">
+            <td data-label="Actuals for Rebate">
+              {item.actualForRebateLC}
+            </td>
+
+            <td data-label="Bonus">
               {(
                 parseFloat(item.bonusLC) ||
                 parseFloat(item.bonusUSD) * 83 ||
                 0
-              ).toLocaleString("en-IN", { style: "currency", currency: "INR" })}
+              ).toLocaleString("en-IN")}
             </td>
             <td data-label="Status">
               <span

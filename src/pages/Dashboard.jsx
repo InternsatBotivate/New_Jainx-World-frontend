@@ -14,7 +14,7 @@ function Dashboard() {
   const [partnerId, setPartnerId] = useState("991002342603");
   const [quarter, setQuarter] = useState("Q1-26");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(500);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [actualData, setActualData] = useState({});

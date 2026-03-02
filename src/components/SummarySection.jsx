@@ -154,11 +154,7 @@ function SummarySection({ summary, page, data, filterCategory, setFilterCategory
                                 />
                             </div>
                         </div>
-                        <div className="summary-filter-group" style={{ marginLeft: 'auto', alignSelf: 'flex-end' }}>
-                            <button className="btn-refresh">
-                                Refresh Summary
-                            </button>
-                        </div>
+                        
                     </div>
                 </div>
             )}

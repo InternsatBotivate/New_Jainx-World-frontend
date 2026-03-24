@@ -31,7 +31,7 @@ function SummarySection({ summary, page, data, filterCategory, setFilterCategory
         return [...new Set(data.map(d => d.status).filter(Boolean))];
     }, [data]);
 
-    if (!summary) return null;
+    // if (!summary) return null; // REMOVED: Always show section to keep filters accessible
 
     return (
         <div className="summary-section">
@@ -60,40 +60,40 @@ function SummarySection({ summary, page, data, filterCategory, setFilterCategory
                     <div className="summary-grid">
                         <div className="summary-item">
                             <label>Program Quarter</label>
-                            <span>{summary.programQuarter}</span>
+                            <span>{summary?.programQuarter || "—"}</span>
                         </div>
                         <div className="summary-item">
                             <label>Partner Name</label>
-                            <span>{summary.partnerName}</span>
+                            <span>{summary?.partnerName || "—"}</span>
                         </div>
                         <div className="summary-item">
                             <label>Partner Location ID</label>
-                            <span>{summary.partnerLocationID}</span>
+                            <span>{summary?.partnerLocationID || "—"}</span>
                         </div>
                         <div className="summary-item">
                             <label>Total Records</label>
-                            <span>{summary.totalRecords}</span>
+                            <span>{summary?.totalRecords || 0}</span>
                         </div>
                         <div className="summary-item">
                             <label>Current Page</label>
-                            <span>{page} / {summary.totalPages || 1}</span>
+                            <span>{page} / {summary?.totalPages || 1}</span>
                         </div>
 
                         <div className="summary-item">
                             <label>Total Target</label>
-                            <span className="bold">{summary.totalTarget}</span>
+                            <span className="bold">{summary?.totalTarget || "₹0"}</span>
                         </div>
                         <div className="summary-item">
                             <label>Total Achievement</label>
-                            <span className="bold">{summary.totalAchievement}</span>
+                            <span className="bold">{summary?.totalAchievement || "₹0"}</span>
                         </div>
                         <div className="summary-item">
                             <label>Achievement %</label>
-                            <span className="bold">{summary.achievementPct}</span>
+                            <span className="bold">{summary?.achievementPct || "0%"}</span>
                         </div>
                         <div className="summary-item">
                             <label>Total Bonus</label>
-                            <span className="bold text-success">{summary.totalBonus}</span>
+                            <span className="bold text-success">{summary?.totalBonus || "₹0"}</span>
                         </div>
                     </div>
 

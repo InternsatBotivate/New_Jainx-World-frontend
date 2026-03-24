@@ -3,6 +3,9 @@ import React, { useEffect, useMemo } from "react";
 function Header({
     partnerId,
     setPartnerId,
+    selectedPartner,
+    setSelectedPartner,
+    partners,
     quarter,
     setQuarter,
     page,
@@ -10,12 +13,13 @@ function Header({
     pageSize,
     setPageSize,
     handleSearchClick,
+    loading, // Destructure loading prop
 }) {
 
     // 🔥 Generate quarters dynamically from Q1-26 to current quarter
     const generateQuarters = () => {
         const quarters = [];
-        const startYear = 2026; // Q1-26 starting label year
+        const startYear = 2025; // Q1-25 starting label year
         const now = new Date();
 
         const getCurrentQuarter = () => {
@@ -101,6 +105,68 @@ function Header({
             </div>
 
             <div className="header-filters">
+                {/* Partner Name dropdown */}
+                <div className="header-filter-group" style={{ position: "relative" }}>
+                    <label className="header-filter-label">
+                        Partner Name
+                        {loading && (
+                            <span className="header-loading-tag" style={{
+                                marginLeft: "8px",
+                                fontSize: "0.6rem",
+                                background: "rgba(255, 255, 255, 0.2)",
+                                padding: "1px 6px",
+                                borderRadius: "10px",
+                                textTransform: "none",
+                                verticalAlign: "middle"
+                            }}>
+                                Updating...
+                            </span>
+                        )}
+                    </label>
+                    <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                        <select
+                            className="header-filter-input"
+                            value={selectedPartner}
+                            onChange={(e) => setSelectedPartner(e.target.value)}
+                            style={{
+                                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                                color: "#ffffff",
+                                border: `1px solid ${loading ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.2)"}`,
+                                minWidth: "280px",
+                                cursor: loading ? "wait" : "pointer",
+                                backdropFilter: "blur(4px)",
+                                fontWeight: "600",
+                                paddingRight: "35px", // space for loading icon
+                                transition: "all 0.3s ease"
+                            }}
+                            disabled={loading}
+                        >
+                            {Object.entries(partners).map(([key, val]) => (
+                                <option key={key} value={key} style={{ backgroundColor: "#1e3c72", color: "#fff" }}>
+                                    {val.name}
+                                </option>
+                            ))}
+                        </select>
+                        {loading && (
+                            <div style={{
+                                position: "absolute",
+                                right: "10px",
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                                <div className="spinner-mini" style={{
+                                    width: "14px",
+                                    height: "14px",
+                                    border: "2px solid rgba(255,255,255,0.3)",
+                                    borderTop: "2px solid white",
+                                    borderRadius: "50%",
+                                    animation: "spin 0.8s linear infinite"
+                                }}></div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
                 <div className="header-filter-group">
                     <label className="header-filter-label">Partner ID</label>
                     <input

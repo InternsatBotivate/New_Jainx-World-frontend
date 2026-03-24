@@ -11,7 +11,15 @@ import ClipLoader from "react-spinners/ClipLoader";
 const BASE_URL = import.meta.env.VITE_FRONTEND_API_KEY + "/api/hp/programs";
 
 function Dashboard() {
-  const [partnerId, setPartnerId] = useState("991002342603");
+  // Partner config map
+  const PARTNERS = {
+    JAINX_WORLD: { name: "JAINX WORLD", partnerId: "991002342603" },
+    JAINX_ITG: { name: "JAINX LAPTOP AND COMPUTER WORLD ITG", partnerId: "70584957" },
+  };
+
+  const [selectedPartner, setSelectedPartner] = useState("JAINX_WORLD");
+  const [searchedPartner, setSearchedPartner] = useState("JAINX_WORLD"); // snapshot on Search click
+  const [partnerId, setPartnerId] = useState(PARTNERS.JAINX_WORLD.partnerId);
   const [quarter, setQuarter] = useState("Q1-26");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(500);
@@ -28,20 +36,37 @@ function Dashboard() {
 
   const intervalRef = useRef(null);
 
+  // Sync partnerId when selectedPartner changes
+  useEffect(() => {
+    setPartnerId(PARTNERS[selectedPartner]?.partnerId || "");
+    setError(null); // Clear error immediately on change to show we are trying again
+  }, [selectedPartner, quarter]);
+
+  // Automated fetch with debounce to prevent spamming the backend (Industrial Standard)
+  useEffect(() => {
+    if (!partnerId || !quarter) return;
+
+    const handler = setTimeout(() => {
+      handleSearchClick();
+    }, 400); // 400ms debounce
+
+    return () => clearTimeout(handler);
+  }, [selectedPartner, quarter, partnerId, page, pageSize]); // Trigger on any filter change
+
   const fetchSearchData = useCallback(async (params) => {
     const response = await axios.get(BASE_URL, { params });
     return response.data;
   }, []);
 
   const handleSearchClick = useCallback(async () => {
-    const params = { quarter, partnerId, page, pageSize };
+    const params = { quarter, partnerId, page, pageSize, partner: selectedPartner };
 
     try {
       setLoading(true);
       setError(null);
-
       const result = await fetchSearchData(params);
       setActualData(result);
+      setSearchedPartner(selectedPartner); // ONLY update snapshot on success
 
       // Clear previous auto refresh
       if (intervalRef.current) {
@@ -66,14 +91,12 @@ function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [quarter, partnerId, page, pageSize, fetchSearchData]);
+  }, [quarter, partnerId, page, pageSize, selectedPartner, fetchSearchData]);
 
   /* ================= CLEANUP ================= */
 
   useEffect(() => {
-    // First load only
-    handleSearchClick();
-
+    // Initial fetch is now handled by the selectedPartner/quarter effect
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -112,8 +135,8 @@ function Dashboard() {
 
     return {
       programQuarter: validData[0]?.programQuarter || quarter,
-      partnerName: validData[0]?.partnerName || "Unknown",
-      partnerLocationID: validData[0]?.partnerLocationID || partnerId,
+      partnerName: PARTNERS[searchedPartner]?.name || validData[0]?.partnerName || "Unknown",
+      partnerLocationID: PARTNERS[searchedPartner]?.partnerId || validData[0]?.partnerLocationID || partnerId,
       totalRecords: actualData.data.length,
       currentPage: actualData.currentPage,
       totalPages: actualData.pageCount,
@@ -131,7 +154,7 @@ function Dashboard() {
         currency: "INR",
       }),
     };
-  }, [quarter, partnerId, actualData]);
+  }, [quarter, partnerId, searchedPartner, actualData]);
 
   // Filter data based on dropdowns + search
   const filteredData = useMemo(() => {
@@ -168,6 +191,9 @@ function Dashboard() {
       <Header
         partnerId={partnerId}
         setPartnerId={setPartnerId}
+        selectedPartner={selectedPartner}
+        setSelectedPartner={setSelectedPartner}
+        partners={PARTNERS}
         quarter={quarter}
         setQuarter={setQuarter}
         page={page}
@@ -175,6 +201,7 @@ function Dashboard() {
         pageSize={pageSize}
         setPageSize={setPageSize}
         handleSearchClick={handleSearchClick}
+        loading={loading}
       />
 
       <SummarySection

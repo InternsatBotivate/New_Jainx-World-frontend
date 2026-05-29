@@ -15,6 +15,7 @@ function Dashboard() {
   const PARTNERS = {
     JAINX_WORLD: { name: "JAINX WORLD", partnerId: "991002342603" },
     JAINX_ITG: { name: "JAINX LAPTOP AND COMPUTER WORLD ITG", partnerId: "70584957" },
+    JAINX_INDIA: { name: "JAINX INDIA", partnerId: "991001314186" },
   };
 
   const [selectedPartner, setSelectedPartner] = useState("JAINX_WORLD");
